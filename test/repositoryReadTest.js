@@ -77,7 +77,7 @@ describe('Repository read', function() {
 
     describe('with options containing a type property with the value of', function() {
 
-      var types = ['inmemory', 'mongodb', 'tingodb', 'redis'/*, 'couchdb', 'dynamodb', 'azuretable'*/];
+      var types = ['inmemory', 'mongodb', 'tingodb', 'redis'/*, 'dynamodb', 'azuretable'*/];
 
       types.forEach(function(type) {
 
