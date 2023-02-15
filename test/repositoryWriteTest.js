@@ -76,7 +76,7 @@ describe('Repository write', function() {
 
     describe('with options containing a type property with the value of', function() {
 
-      var types = ['inmemory', 'mongodb', 'tingodb', 'redis'/*, 'couchdb', 'dynamodb', 'documentdb', 'azuretable'*/];
+      var types = ['inmemory', 'mongodb', 'tingodb', 'redis'/*, 'couchdb', 'dynamodb', 'azuretable'*/];
 
       types.forEach(function(type) {
 
@@ -500,7 +500,7 @@ describe('Repository write', function() {
 
                       });
 
-                      var noQueryArray = ['azuretable', 'documentdb', 'dynamodb'];
+                      var noQueryArray = ['azuretable', 'dynamodb'];
 
                       if (!_.includes(noQueryArray, type)) {
 
@@ -1145,7 +1145,7 @@ describe('Repository write', function() {
 
                       });
 
-                      var noQueryArray = ['azuretable', 'documentdb', 'dynamodb'];
+                      var noQueryArray = ['azuretable', 'dynamodb'];
 
                       if (!_.includes(noQueryArray, type)) {
 
