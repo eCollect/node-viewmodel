@@ -23,7 +23,7 @@
   "devDependencies": {
     "aws-sdk": ">=2.123.0",
     "azure-storage": ">=0.3.0",
-    "eslint": "^4.3.0",
+    "eslint": "^8.34.0",
     "eslint-plugin-no-only-tests": "^2.0.0",
     "expect.js": ">= 0.1.2",
     "mocha": ">= 4.0.0",
