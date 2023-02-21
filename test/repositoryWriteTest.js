@@ -76,7 +76,7 @@ describe('Repository write', function() {
 
     describe('with options containing a type property with the value of', function() {
 
-      var types = ['inmemory', 'mongodb', 'tingodb', 'redis'/*, 'dynamodb', 'azuretable'*/];
+      var types = ['inmemory', 'mongodb', 'tingodb', 'redis'/*, 'azuretable'*/];
 
       types.forEach(function(type) {
 
@@ -213,26 +213,24 @@ describe('Repository write', function() {
 
               describe('calling get', function() {
 
-                if (type !== 'dynamodb') {
-                  describe('subscribing to before/after-database-get', function() {
+                describe('subscribing to before/after-database-get', function() {
 
-                    it('it should emit the correct event', function(done) {
+                  it('it should emit the correct event', function(done) {
 
-                      var receivedBefore = false;
-                      var receivedAfter = false;
-                      dummyRepo.on('before-database-get', function() { receivedBefore = true; });
-                      dummyRepo.on('after-database-get', function() { receivedAfter = true; });
+                    var receivedBefore = false;
+                    var receivedAfter = false;
+                    dummyRepo.on('before-database-get', function() { receivedBefore = true; });
+                    dummyRepo.on('after-database-get', function() { receivedAfter = true; });
 
-                      dummyRepo.get(function() {
-                        expect(receivedBefore).to.eql(true);
-                        expect(receivedAfter).to.eql(true);
-                        done();
-                      });
-
+                    dummyRepo.get(function() {
+                      expect(receivedBefore).to.eql(true);
+                      expect(receivedAfter).to.eql(true);
+                      done();
                     });
 
                   });
-                }
+
+                });
                 
                 describe('without an id', function() {
 
@@ -307,26 +305,24 @@ describe('Repository write', function() {
 
               describe('calling find', function() {
 
-                if (type !== 'dynamodb') {
-                  describe('subscribing to before/after-database-find', function() {
+                describe('subscribing to before/after-database-find', function() {
 
-                    it('it should emit the correct event', function(done) {
+                  it('it should emit the correct event', function(done) {
 
-                      var receivedBefore = false;
-                      var receivedAfter = false;
-                      dummyRepo.on('before-database-find', function() { receivedBefore = true; });
-                      dummyRepo.on('after-database-find', function() { receivedAfter = true; });
+                    var receivedBefore = false;
+                    var receivedAfter = false;
+                    dummyRepo.on('before-database-find', function() { receivedBefore = true; });
+                    dummyRepo.on('after-database-find', function() { receivedAfter = true; });
 
-                      dummyRepo.find(function() {
-                        expect(receivedBefore).to.eql(true);
-                        expect(receivedAfter).to.eql(true);
-                        done();
-                      });
-
+                    dummyRepo.find(function() {
+                      expect(receivedBefore).to.eql(true);
+                      expect(receivedAfter).to.eql(true);
+                      done();
                     });
 
                   });
-                }
+
+                });
 
                 describe('without a query object', function() {
 
@@ -500,7 +496,7 @@ describe('Repository write', function() {
 
                       });
 
-                      var noQueryArray = ['azuretable', 'dynamodb'];
+                      var noQueryArray = ['azuretable'];
 
                       if (!_.includes(noQueryArray, type)) {
 
@@ -963,26 +959,24 @@ describe('Repository write', function() {
 
               describe('calling findOne', function() {
 
-                if (type !== 'dynamodb') {
-                  describe('subscribing to before/after-database-findOne', function() {
+                describe('subscribing to before/after-database-findOne', function() {
 
-                    it('it should emit the correct event', function(done) {
+                  it('it should emit the correct event', function(done) {
 
-                      var receivedBefore = false;
-                      var receivedAfter = false;
-                      dummyRepo.on('before-database-findOne', function() { receivedBefore = true; });
-                      dummyRepo.on('after-database-findOne', function() { receivedAfter = true; });
+                    var receivedBefore = false;
+                    var receivedAfter = false;
+                    dummyRepo.on('before-database-findOne', function() { receivedBefore = true; });
+                    dummyRepo.on('after-database-findOne', function() { receivedAfter = true; });
 
-                      dummyRepo.findOne(function() {
-                        expect(receivedBefore).to.eql(true);
-                        expect(receivedAfter).to.eql(true);
-                        done();
-                      });
-
+                    dummyRepo.findOne(function() {
+                      expect(receivedBefore).to.eql(true);
+                      expect(receivedAfter).to.eql(true);
+                      done();
                     });
 
                   });
-                }
+
+                });
 
                 describe('without a query object', function() {
 
@@ -1145,7 +1139,7 @@ describe('Repository write', function() {
 
                       });
 
-                      var noQueryArray = ['azuretable', 'dynamodb'];
+                      var noQueryArray = ['azuretable'];
 
                       if (!_.includes(noQueryArray, type)) {
 
@@ -1187,34 +1181,32 @@ describe('Repository write', function() {
 
               describe('calling commit', function() {
 
-                if (type !== 'dynamodb') {
-                  describe('subscribing to before/after-database-commit', function() {
+                describe('subscribing to before/after-database-commit', function() {
 
-                    it('it should emit the correct event', function(done) {
+                  it('it should emit the correct event', function(done) {
 
-                      var receivedBefore = false;
-                      var receivedAfter = false;
-                      dummyRepo.on('before-database-commit', function() { receivedBefore = true; });
-                      dummyRepo.on('after-database-commit', function() { receivedAfter = true; });
+                    var receivedBefore = false;
+                    var receivedAfter = false;
+                    dummyRepo.on('before-database-commit', function() { receivedBefore = true; });
+                    dummyRepo.on('after-database-commit', function() { receivedAfter = true; });
 
-                      var obj = {
-                        foo: 'barrrr',
-                        set: function (k, v) {
-                          key = k;
-                          value = v;
-                        }
-                      };
+                    var obj = {
+                      foo: 'barrrr',
+                      set: function (k, v) {
+                        key = k;
+                        value = v;
+                      }
+                    };
 
-                      dummyRepo.commit(obj, function() {
-                        expect(receivedBefore).to.eql(true);
-                        expect(receivedAfter).to.eql(true);
-                        done();
-                      });
-
+                    dummyRepo.commit(obj, function() {
+                      expect(receivedBefore).to.eql(true);
+                      expect(receivedAfter).to.eql(true);
+                      done();
                     });
 
                   });
-                }
+
+                });
 
                 describe('with a single object', function() {
 
