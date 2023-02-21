@@ -76,7 +76,7 @@ describe('Repository write', function() {
 
     describe('with options containing a type property with the value of', function() {
 
-      var types = ['inmemory', 'mongodb', 'tingodb', 'redis'/*, 'azuretable'*/];
+      var types = ['inmemory', 'mongodb', 'tingodb', 'redis'];
 
       types.forEach(function(type) {
 
@@ -496,38 +496,32 @@ describe('Repository write', function() {
 
                       });
 
-                      var noQueryArray = ['azuretable'];
+                      describe('matching the query object, that queries an array', function () {
 
-                      if (!_.includes(noQueryArray, type)) {
+                        beforeEach(function (done) {
 
-                        describe('matching the query object, that queries an array', function () {
-
-                          beforeEach(function (done) {
-
-                            dummyRepo.get('4567', function (err, vm) {
-                              vm.set('foos', [
-                                { foo: 'bar' }
-                              ]);
-                              dummyRepo.commit(vm, done);
-                            });
-
-                          });
-
-                          it('it should return all matching records within an array', function (done) {
-
-                            var query = { 'foos.foo': 'bar' };
-
-                            dummyRepo.find(query, function (err, results) {
-                              expect(results).to.be.an('array');
-                              expect(results).to.have.length(1);
-                              done();
-                            });
-
+                          dummyRepo.get('4567', function (err, vm) {
+                            vm.set('foos', [
+                              { foo: 'bar' }
+                            ]);
+                            dummyRepo.commit(vm, done);
                           });
 
                         });
 
-                      }
+                        it('it should return all matching records within an array', function (done) {
+
+                          var query = { 'foos.foo': 'bar' };
+
+                          dummyRepo.find(query, function (err, results) {
+                            expect(results).to.be.an('array');
+                            expect(results).to.have.length(1);
+                            done();
+                          });
+
+                        });
+
+                      });
 
                       var queryExtended = ['inmemory', 'mongodb', 'tingodb'];
 
@@ -1139,37 +1133,31 @@ describe('Repository write', function() {
 
                       });
 
-                      var noQueryArray = ['azuretable'];
+                      describe('matching the query object, that queries an array', function () {
 
-                      if (!_.includes(noQueryArray, type)) {
+                        beforeEach(function (done) {
 
-                        describe('matching the query object, that queries an array', function () {
-
-                          beforeEach(function (done) {
-
-                            dummyRepo.get('4567', function (err, vm) {
-                              vm.set('foos', [
-                                { foo: 'bar' }
-                              ]);
-                              dummyRepo.commit(vm, done);
-                            });
-
-                          });
-
-                          it('it should return all matching records within an array', function (done) {
-
-                            var query = { 'foos.foo': 'bar' };
-
-                            dummyRepo.findOne(query, function (err, result) {
-                              expect(result).to.be.ok();
-                              done();
-                            });
-
+                          dummyRepo.get('4567', function (err, vm) {
+                            vm.set('foos', [
+                              { foo: 'bar' }
+                            ]);
+                            dummyRepo.commit(vm, done);
                           });
 
                         });
 
-                      }
+                        it('it should return all matching records within an array', function (done) {
+
+                          var query = { 'foos.foo': 'bar' };
+
+                          dummyRepo.findOne(query, function (err, result) {
+                            expect(result).to.be.ok();
+                            done();
+                          });
+
+                        });
+
+                      });
 
                     });
 

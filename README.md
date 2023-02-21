@@ -318,10 +318,9 @@ Currently these databases are supported:
 3. couchdb ([cradle] (https://github.com/cloudhead/cradle))
 4. tingodb ([tingodb] (https://github.com/sergeyksv/tingodb))
 5. redis ([redis] (https://github.com/mranney/node_redis))
-6. azuretable ([azure-storage](https://github.com/Azure/azure-storage-node))
-7. documentdb ([documentdb](https://github.com/Azure/azure-documentdb-node), [doqmentdb](https://github.com/a8m/doqmentdb))
-8. elasticsearch ([elasticsearch] (https://github.com/elastic/elasticsearch-js))
-9. elasticsearch6 ([elasticsearch] (https://github.com/elastic/elasticsearch-js)) - for Elasticsearch 5.x and 6.x
+6. documentdb ([documentdb](https://github.com/Azure/azure-documentdb-node), [doqmentdb](https://github.com/a8m/doqmentdb))
+7. elasticsearch ([elasticsearch] (https://github.com/elastic/elasticsearch-js))
+8. elasticsearch6 ([elasticsearch] (https://github.com/elastic/elasticsearch-js)) - for Elasticsearch 5.x and 6.x
 
 ## own db implementation
 You can use your own db implementation by extending this...
