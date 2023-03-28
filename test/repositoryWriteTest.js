@@ -76,7 +76,7 @@ describe('Repository write', function() {
 
     describe('with options containing a type property with the value of', function() {
 
-      var types = ['inmemory', 'mongodb', 'tingodb', 'couchdb', 'redis', 'elasticsearch6', 'dynamodb'/*, 'elasticsearch', 'documentdb', 'azuretable'*/];
+      var types = ['inmemory', 'mongodb', 'tingodb', 'redis'];
 
       types.forEach(function(type) {
 
@@ -213,26 +213,24 @@ describe('Repository write', function() {
 
               describe('calling get', function() {
 
-                if (type !== 'dynamodb') {
-                  describe('subscribing to before/after-database-get', function() {
+                describe('subscribing to before/after-database-get', function() {
 
-                    it('it should emit the correct event', function(done) {
+                  it('it should emit the correct event', function(done) {
 
-                      var receivedBefore = false;
-                      var receivedAfter = false;
-                      dummyRepo.on('before-database-get', function() { receivedBefore = true; });
-                      dummyRepo.on('after-database-get', function() { receivedAfter = true; });
+                    var receivedBefore = false;
+                    var receivedAfter = false;
+                    dummyRepo.on('before-database-get', function() { receivedBefore = true; });
+                    dummyRepo.on('after-database-get', function() { receivedAfter = true; });
 
-                      dummyRepo.get(function() {
-                        expect(receivedBefore).to.eql(true);
-                        expect(receivedAfter).to.eql(true);
-                        done();
-                      });
-
+                    dummyRepo.get(function() {
+                      expect(receivedBefore).to.eql(true);
+                      expect(receivedAfter).to.eql(true);
+                      done();
                     });
 
                   });
-                }
+
+                });
                 
                 describe('without an id', function() {
 
@@ -307,26 +305,24 @@ describe('Repository write', function() {
 
               describe('calling find', function() {
 
-                if (type !== 'dynamodb') {
-                  describe('subscribing to before/after-database-find', function() {
+                describe('subscribing to before/after-database-find', function() {
 
-                    it('it should emit the correct event', function(done) {
+                  it('it should emit the correct event', function(done) {
 
-                      var receivedBefore = false;
-                      var receivedAfter = false;
-                      dummyRepo.on('before-database-find', function() { receivedBefore = true; });
-                      dummyRepo.on('after-database-find', function() { receivedAfter = true; });
+                    var receivedBefore = false;
+                    var receivedAfter = false;
+                    dummyRepo.on('before-database-find', function() { receivedBefore = true; });
+                    dummyRepo.on('after-database-find', function() { receivedAfter = true; });
 
-                      dummyRepo.find(function() {
-                        expect(receivedBefore).to.eql(true);
-                        expect(receivedAfter).to.eql(true);
-                        done();
-                      });
-
+                    dummyRepo.find(function() {
+                      expect(receivedBefore).to.eql(true);
+                      expect(receivedAfter).to.eql(true);
+                      done();
                     });
 
                   });
-                }
+
+                });
 
                 describe('without a query object', function() {
 
@@ -473,18 +469,6 @@ describe('Repository write', function() {
                         it('it should return an empty array', function(done) {
 
                           var query = { foo: 'bas' };
-                          // elasticsearch6 special case, as it does not supports only native queries
-                          if (type==='elasticsearch6') {
-                            query = {
-                              bool: {
-                                filter: {
-                                  term: {
-                                    foo: 'bas'
-                                  }
-                                }
-                              }
-                            }
-                          }
 
                           dummyRepo.find(query, function(err, results) {
                             expect(results).to.be.an('array');
@@ -501,18 +485,6 @@ describe('Repository write', function() {
                         it('it should return all matching records within an array', function(done) {
 
                           var query = { foo: 'bar' };
-                          // elasticsearch6 special case, as it does not supports only native queries
-                          if (type==='elasticsearch6') {
-                            query = {
-                                bool: {
-                                  filter: {
-                                    term: {
-                                      foo: 'bar'
-                                    }
-                                  }
-                                }
-                            }
-                          }
 
                           dummyRepo.find(query, function(err, results) {
                             expect(results).to.be.an('array');
@@ -524,52 +496,34 @@ describe('Repository write', function() {
 
                       });
 
-                      var noQueryArray = ['azuretable', 'documentdb', 'dynamodb'];
+                      describe('matching the query object, that queries an array', function () {
 
-                      if (!_.includes(noQueryArray, type)) {
+                        beforeEach(function (done) {
 
-                        describe('matching the query object, that queries an array', function () {
-
-                          beforeEach(function (done) {
-
-                            dummyRepo.get('4567', function (err, vm) {
-                              vm.set('foos', [
-                                { foo: 'bar' }
-                              ]);
-                              dummyRepo.commit(vm, done);
-                            });
-
-                          });
-
-                          it('it should return all matching records within an array', function (done) {
-
-                            var query = { 'foos.foo': 'bar' };
-                            // elasticsearch6 special case, as it does not supports only native queries
-                            if (type==='elasticsearch6') {
-                              query = {
-                                bool: {
-                                  filter: {
-                                    term: {
-                                      'foos.foo': 'bar'
-                                    }
-                                  }
-                                }
-                              }
-                            }
-
-                            dummyRepo.find(query, function (err, results) {
-                              expect(results).to.be.an('array');
-                              expect(results).to.have.length(1);
-                              done();
-                            });
-
+                          dummyRepo.get('4567', function (err, vm) {
+                            vm.set('foos', [
+                              { foo: 'bar' }
+                            ]);
+                            dummyRepo.commit(vm, done);
                           });
 
                         });
 
-                      }
+                        it('it should return all matching records within an array', function (done) {
 
-                      var queryExtended = ['inmemory', 'mongodb', 'tingodb', 'elasticsearch', 'elasticsearch6'];
+                          var query = { 'foos.foo': 'bar' };
+
+                          dummyRepo.find(query, function (err, results) {
+                            expect(results).to.be.an('array');
+                            expect(results).to.have.length(1);
+                            done();
+                          });
+
+                        });
+
+                      });
+
+                      var queryExtended = ['inmemory', 'mongodb', 'tingodb'];
 
                       if (_.includes(queryExtended, type)) {
 
@@ -604,18 +558,6 @@ describe('Repository write', function() {
                             it('it should return all matching records within an array', function (done) {
 
                             var query = {age: {$gte: 10, $lte: 20}};
-                            if (type === 'elasticsearch6')
-                              query = {
-                                bool: {
-                                  filter: {
-                                    range: {
-                                      age: {
-                                        gte: 10, lte: 20
-                                      }
-                                    }
-                                  }
-                                }
-                              }
 
                               dummyRepo.find(query, function (err, results) {
                                 expect(results).to.be.an('array');
@@ -633,19 +575,7 @@ describe('Repository write', function() {
                             it('it should return all matching records within an array', function (done) {
 
                               var query = { $or: [{age: 18}, {special: true}] };
-                              if (type === 'elasticsearch6')
-                                query = {
-                                  bool: {
-                                    filter: {
-                                      bool: {
-                                        should: [
-                                          { term: {age : 18}},
-                                          { term: {special: true}}
-                                        ]
-                                      }
-                                    }
-                                  }
-                                }
+
                               dummyRepo.find(query, function (err, results) {
                                 expect(results).to.be.an('array');
                                 expect(results).to.have.length(2);
@@ -660,15 +590,6 @@ describe('Repository write', function() {
                             it('it should return all matching records within an array', function (done) {
 
                               var query = { $and: [{age: 6}, {special: true}] };
-                              if (type === 'elasticsearch6')
-                                query = {
-                                  bool: {
-                                    filter: [
-                                      { term: {age : 6}},
-                                      { term: {special: true}}
-                                    ]
-                                  }
-                                }
 
                               dummyRepo.find(query, function (err, results) {
                                 expect(results).to.be.an('array');
@@ -686,17 +607,6 @@ describe('Repository write', function() {
 
                               var query = { $or: [{age: 18}, {special: true}] };
                               var queryOptions = { sort: [['age', 'desc']] };
-                              if (type === 'elasticsearch6') {
-                                query = {
-                                  bool: {
-                                    should: [
-                                      { term: {age : 18}},
-                                      { term: {special: true}}
-                                    ]
-                                  }
-                                };
-                                queryOptions = { sort : [ { age: 'desc'}  ]};
-                              }
 
                               dummyRepo.find(query, queryOptions, function (err, results) {
                                 expect(results).to.be.an('array');
@@ -714,17 +624,6 @@ describe('Repository write', function() {
                             it('it should return all matching records within an array', function (done) {
                               var query = { $or: [{age: 18}, {special: true}] };
                               var queryOptions = { sort: { age: 1} };
-                              if (type === 'elasticsearch6') {
-                                query = {
-                                  bool: {
-                                    should: [
-                                      { term: {age : 18}},
-                                      { term: {special: true}}
-                                    ]
-                                  }
-                                };
-                                queryOptions = { sort : { age: 'asc'} };
-                              }
 
                               dummyRepo.find(query, queryOptions, function (err, results) {
                                 expect(results).to.be.an('array');
@@ -742,19 +641,6 @@ describe('Repository write', function() {
                             it('it should return all matching records within an array', function (done) {
 
                               var query = { age: { $in: [1, 2, 3, 6] } };
-                              // elasticsearch6 special case, as it does not supports only native queries
-                              if (type==='elasticsearch6') {
-                                query = {
-                                  bool: {
-                                    filter: {
-                                      terms: {
-                                        age: [1, 2, 3, 6]
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-
 
                               dummyRepo.find(query, function (err, results) {
                                 expect(results).to.be.an('array');
@@ -775,18 +661,6 @@ describe('Repository write', function() {
 
                                 var query = {$or:[{name:{$regex:'.*pq.*'}}]};
                                 var queryOptions = { limit: 2, skip: 1, sort: { age: 1 } };
-                                if(type === 'elasticsearch6') {
-                                  query = {
-                                    bool: {
-                                      filter: {
-                                        regexp: {
-                                          name: '.*pq.*'
-                                        }
-                                      }
-                                    }
-                                  };
-                                  queryOptions = { size: 2, from: 1, sort : { age: 'asc' } };
-                                }
 
                                 dummyRepo.find(query, queryOptions, function (err, results) {
                                   expect(results).to.be.an('array');
@@ -809,20 +683,6 @@ describe('Repository write', function() {
 
                                 var query = { age: {$gte: 0} };
                                 var queryOptions = { limit: 2, skip: 1, sort: { age: 1 } };
-                                if(type === 'elasticsearch6') {
-                                  query = {
-                                    bool: {
-                                      filter : {
-                                        range: {
-                                          age: {
-                                            gte: 0
-                                          }
-                                        }
-                                      }
-                                    }
-                                  };
-                                  queryOptions = { size: 2, from: 1, sort : { age: 'asc' } };
-                                }
 
                                 dummyRepo.find(query, queryOptions, function (err, results) {
                                   expect(results).to.be.an('array');
@@ -842,7 +702,7 @@ describe('Repository write', function() {
 
                       }
 
-                      var bulkCommit = ['inmemory', 'mongodb', 'elasticsearch6'];
+                      var bulkCommit = ['inmemory', 'mongodb'];
 
                       if (_.includes(bulkCommit, type)) {
 
@@ -881,14 +741,6 @@ describe('Repository write', function() {
                                       expect(vms).to.have.length(4);
 
                                       var query = { bulk: true };
-                                      if (type === 'elasticsearch6')
-                                        query = {
-                                          bool: {
-                                            filter: [
-                                              { term: {bulk: true}}
-                                            ]
-                                          }
-                                        }
       
                                       dummyRepo.find(query, function (err, vms) {
                                         expect(err).not.to.be.ok();
@@ -1081,9 +933,6 @@ describe('Repository write', function() {
 
                       var queryOptions = { limit: 2, skip: 1 };
 
-                      if (type === 'elasticsearch6')
-                        queryOptions = {from: 1, size: 2};
-
                       dummyRepo.find({}, queryOptions, function (err, results) {
                         expect(results).to.be.an('array');
                         expect(results.length).to.eql(2);
@@ -1104,26 +953,24 @@ describe('Repository write', function() {
 
               describe('calling findOne', function() {
 
-                if (type !== 'dynamodb') {
-                  describe('subscribing to before/after-database-findOne', function() {
+                describe('subscribing to before/after-database-findOne', function() {
 
-                    it('it should emit the correct event', function(done) {
+                  it('it should emit the correct event', function(done) {
 
-                      var receivedBefore = false;
-                      var receivedAfter = false;
-                      dummyRepo.on('before-database-findOne', function() { receivedBefore = true; });
-                      dummyRepo.on('after-database-findOne', function() { receivedAfter = true; });
+                    var receivedBefore = false;
+                    var receivedAfter = false;
+                    dummyRepo.on('before-database-findOne', function() { receivedBefore = true; });
+                    dummyRepo.on('after-database-findOne', function() { receivedAfter = true; });
 
-                      dummyRepo.findOne(function() {
-                        expect(receivedBefore).to.eql(true);
-                        expect(receivedAfter).to.eql(true);
-                        done();
-                      });
-
+                    dummyRepo.findOne(function() {
+                      expect(receivedBefore).to.eql(true);
+                      expect(receivedAfter).to.eql(true);
+                      done();
                     });
 
                   });
-                }
+
+                });
 
                 describe('without a query object', function() {
 
@@ -1261,18 +1108,6 @@ describe('Repository write', function() {
 
                         it('it should return an empty array', function(done) {
                           var query = { 'foo': 'bas' };
-                          // elasticsearch6 special case, as it does not supports only native queries
-                          if (type==='elasticsearch6') {
-                            query = {
-                              bool: {
-                                filter: {
-                                  term: {
-                                    'foo': 'bas'
-                                  }
-                                }
-                              }
-                            }
-                          }
 
                           dummyRepo.findOne(query, function(err, result) {
                             expect(result).not.to.be.ok();
@@ -1288,18 +1123,6 @@ describe('Repository write', function() {
                         it('it should return all matching records within an array', function(done) {
 
                           var query = { 'foo': 'bar' };
-                          // elasticsearch6 special case, as it does not supports only native queries
-                          if (type==='elasticsearch6') {
-                            query = {
-                              bool: {
-                                filter: {
-                                  term: {
-                                    'foo': 'bar'
-                                  }
-                                }
-                              }
-                            }
-                          }
 
                           dummyRepo.findOne(query, function(err, result) {
                             expect(result).to.be.ok();
@@ -1310,49 +1133,31 @@ describe('Repository write', function() {
 
                       });
 
-                      var noQueryArray = ['azuretable', 'documentdb', 'dynamodb'];
+                      describe('matching the query object, that queries an array', function () {
 
-                      if (!_.includes(noQueryArray, type)) {
+                        beforeEach(function (done) {
 
-                        describe('matching the query object, that queries an array', function () {
-
-                          beforeEach(function (done) {
-
-                            dummyRepo.get('4567', function (err, vm) {
-                              vm.set('foos', [
-                                { foo: 'bar' }
-                              ]);
-                              dummyRepo.commit(vm, done);
-                            });
-
-                          });
-
-                          it('it should return all matching records within an array', function (done) {
-
-                            var query = { 'foos.foo': 'bar' };
-                            // elasticsearch6 special case, as it does not supports only native queries
-                            if (type==='elasticsearch6') {
-                              query = {
-                                bool: {
-                                  filter: {
-                                    term: {
-                                      'foos.foo': 'bar'
-                                    }
-                                  }
-                                }
-                              }
-                            }
-
-                            dummyRepo.findOne(query, function (err, result) {
-                              expect(result).to.be.ok();
-                              done();
-                            });
-
+                          dummyRepo.get('4567', function (err, vm) {
+                            vm.set('foos', [
+                              { foo: 'bar' }
+                            ]);
+                            dummyRepo.commit(vm, done);
                           });
 
                         });
 
-                      }
+                        it('it should return all matching records within an array', function (done) {
+
+                          var query = { 'foos.foo': 'bar' };
+
+                          dummyRepo.findOne(query, function (err, result) {
+                            expect(result).to.be.ok();
+                            done();
+                          });
+
+                        });
+
+                      });
 
                     });
 
@@ -1364,34 +1169,32 @@ describe('Repository write', function() {
 
               describe('calling commit', function() {
 
-                if (type !== 'dynamodb') {
-                  describe('subscribing to before/after-database-commit', function() {
+                describe('subscribing to before/after-database-commit', function() {
 
-                    it('it should emit the correct event', function(done) {
+                  it('it should emit the correct event', function(done) {
 
-                      var receivedBefore = false;
-                      var receivedAfter = false;
-                      dummyRepo.on('before-database-commit', function() { receivedBefore = true; });
-                      dummyRepo.on('after-database-commit', function() { receivedAfter = true; });
+                    var receivedBefore = false;
+                    var receivedAfter = false;
+                    dummyRepo.on('before-database-commit', function() { receivedBefore = true; });
+                    dummyRepo.on('after-database-commit', function() { receivedAfter = true; });
 
-                      var obj = {
-                        foo: 'barrrr',
-                        set: function (k, v) {
-                          key = k;
-                          value = v;
-                        }
-                      };
+                    var obj = {
+                      foo: 'barrrr',
+                      set: function (k, v) {
+                        key = k;
+                        value = v;
+                      }
+                    };
 
-                      dummyRepo.commit(obj, function() {
-                        expect(receivedBefore).to.eql(true);
-                        expect(receivedAfter).to.eql(true);
-                        done();
-                      });
-
+                    dummyRepo.commit(obj, function() {
+                      expect(receivedBefore).to.eql(true);
+                      expect(receivedAfter).to.eql(true);
+                      done();
                     });
 
                   });
-                }
+
+                });
 
                 describe('with a single object', function() {
 

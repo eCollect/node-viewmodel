@@ -1,37 +1,8 @@
-# ⚠️ IMPORTANT NEWS! 📰
-
-I’ve been dealing with CQRS, event-sourcing and DDD long enough now that I don’t need working with it anymore unfortunately, so at least for now this my formal farewell!
-
-I want to thank everyone who has contributed in one way or another.
-Especially...
-
-- [Jan](https://github.com/jamuhl), who introduced me to this topic.
-- [Dimitar](https://github.com/nanov), one of the last bigger contributors and maintainer.
-- My last employer, who gave me the possibility to use all these CQRS modules in a big Cloud-System.
-- My family and friends, who very often came up short.
-
-Finally, I would like to thank [Golo Roden](https://github.com/goloroden), who was there very early at the beginning of my CQRS/ES/DDD journey and is now here again to take over these modules.
-
-Golo Roden is the founder, CTO and managing director of [the native web](https://www.thenativeweb.io/), a company specializing in native web technologies. Among other things, he also teaches CQRS/ES/DDD etc. and based on his vast knowledge, he brought wolkenkit to life.
-[wolkenkit](https://wolkenkit.io) is a CQRS and event-sourcing framework based on Node.js. It empowers you to build and run scalable distributed web and cloud services that process and store streams of domain events.
-
-With this step, I can focus more on [i18next](https://www.i18next.com), [locize](https://locize.com) and [localistars](https://localistars.com). I'm happy about that. 😊
-
-So, there is no end, but the start of a new phase for my CQRS modules. 😉
-
-I wish you all good luck on your journey.
-
-Who knows, maybe we'll meet again in a github issue or PR at [i18next](https://github.com/i18next/i18next) 😉
-
-
-[Adriano Raiano](https://twitter.com/adrirai)
-
----
-
 # Introduction
 
 [![travis](https://img.shields.io/travis/adrai/node-viewmodel.svg)](https://travis-ci.org/adrai/node-viewmodel) [![npm](https://img.shields.io/npm/v/viewmodel.svg)](https://npmjs.org/package/viewmodel)
 
+This is a fork of `thenativeweb/node-viewmodel` since the latter was deprecated.
 Node-viewmodel is a node.js module for multiple databases.
 It can be very useful if you work with (d)ddd, cqrs, eventdenormalizer, host, etc.
 
@@ -248,7 +219,6 @@ Make shure you have installed the required driver, in this example run: 'npm ins
 currently supported by:
 - inmemory
 - mongodb
-- elasticsearch6
 
 
 ## mongodb
@@ -281,61 +251,6 @@ For mongodb you can define indexes for performance boosts in find function.
 ## redis
 The find function does ignore the query argument and always fetches all items in the collection.
 
-## Elasticsearch >= 5.X
-Use the 'elasticsearch6' type for Elasticsearch versions 5.X and 6.X.
-
-The find queries are not mongoDb compatible as the rest of the implementations due to the uneeded overhead and complexity of converting between both formats.
-
-For find queries with elasticsearch6 use elasticsearch [native elastic Query DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html);
-
-repository.find( onlyTheQueryClause, otherBodyOptions, callback);
-
-```javascript
-    repository.find(
-        {
-            range : {
-                age : {
-                    gte : 10,
-                    lte : 20
-                }
-            }
-        ),
-        {
-            from: 0,
-            size: 10,
-            sort: { age: 'asc' }
-        },
-        function(error, results) {
-        });
-```
-
-Additionaly for elasticsearch6 the number of shards, number of replicas, the refresh behaivour on index and the mappings on index create can be addtionaly defined to optimize performace.
-
-```javascript
-    var dummyRepo = repository.extend({
-        collectionName: 'dummy',
-        repositorySettings: {
-            elasticsearch6: {
-                refresh: 'wait_for', // optional, refresh behaviour on index, default is true ( ie. force index refresh ) https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-refresh.html                
-                waitForActiveShards: 2 // optional, defaults to 1 ( ie. wait only for primary ) https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-create-index.html#create-index-wait-for-active-shards
-                index: { // optional applied on index create, https://www.elastic.co/guide/en/elasticsearch/reference/6.x/indices-create-index.html
-                    settings : { // will be merged with the default ones,
-                        number_of_shards: 3, // optional defaults to 1,
-                        number_of_replicas: 1 // optional defaults to 0,
-                    },
-                    mappings : { // optiona will be merged with the default ones,
-                        properties: { // specific properties to not be handled by dynamic mapper
-                            title: {
-                                type: "text"
-                            }
-                        }                    
-                    }
-                }
-            }
-        }
-    });
-```
-
 
 # [Release notes](https://github.com/adrai/node-viewmodel/blob/master/releasenotes.md)
 
@@ -347,11 +262,6 @@ Currently these databases are supported:
 3. couchdb ([cradle] (https://github.com/cloudhead/cradle))
 4. tingodb ([tingodb] (https://github.com/sergeyksv/tingodb))
 5. redis ([redis] (https://github.com/mranney/node_redis))
-6. azuretable ([azure-storage](https://github.com/Azure/azure-storage-node))
-7. documentdb ([documentdb](https://github.com/Azure/azure-documentdb-node), [doqmentdb](https://github.com/a8m/doqmentdb))
-8. elasticsearch ([elasticsearch] (https://github.com/elastic/elasticsearch-js))
-9. elasticsearch6 ([elasticsearch] (https://github.com/elastic/elasticsearch-js)) - for Elasticsearch 5.x and 6.x
-10. dynamodb ([aws-sdk] (https://github.com/aws/aws-sdk-js))
 
 ## own db implementation
 You can use your own db implementation by extending this...
